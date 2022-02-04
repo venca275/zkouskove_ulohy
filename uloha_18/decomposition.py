@@ -1,9 +1,9 @@
-#funkce rozkládající vstupní parametr n (přirozené číslo větší než 1) na součin prvočísel
+# function that decomposes an input parameter n (a natural number greater than 1) into the product of prime numbers
 def decomp_into_prime_num(n):
     if n <= 1:
-        exit("Prvočíselný rozklad lze provést pouze pro číslo N > 1")
+        exit("CHYBA: Prvočíselný rozklad lze provést pouze pro číslo N > 1")
     if n % 1 != 0:
-        exit("Prvočíselný rozklad lze provést pouze pro přirozené číslo N")
+        exit("CHYBA: Prvočíselný rozklad lze provést pouze pro přirozené číslo N")
     
     print("Prvočíselný rozklad čísla {} je:".format(n))
     m = n
@@ -35,5 +35,8 @@ def decomp_into_prime_num(n):
         if exp > 1:
             print("{}^{}".format(num, exp))
         
-#spuštění funkce    
-decomp_into_prime_num(100)
+# run function
+NATURAL_NUMBER= 100
+if type(NATURAL_NUMBER) != int:
+    exit("CHYBA: Prvočíselný rozklad lze provést pouze pro přirozené číslo N")
+decomp_into_prime_num(NATURAL_NUMBER)
