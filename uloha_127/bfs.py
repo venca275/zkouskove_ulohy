@@ -1,30 +1,32 @@
 import argparse
+from cProfile import label
 from graph import Graph
 
+# Function for reading the input file
 def read(input_name):
         try:
             with open(input_name, "r", encoding="UTF-8") as physicFile:
                 return physicFile.read().splitlines()
         except FileNotFoundError: # Verifies if the file exist
-            print(f"CHYBA: Požadovaný soubor {input_name} neexistuje. Program skončí.")
+            print(f"ERROR: The requested file {input_name} does not exist. The program ends.")
             exit()
         except PermissionError: # Verifies if its acces to the file
-            print(f"CHYBA: Nemám přístup k {input_name}.Program skončí.")
+            print(f"ERROR: I do not have access to {input_name}. The program ends.")
             exit()
         except ValueError as e: # Verifies if the file is valid
-            print(f"CHYBA: Soubor {input_name} není validní. Program skončí.\n", e)
+            print(f"ERROR: The file {input_name} is not valid. The program ends.\n", e)
             exit()
 
 # Main function, which creates queue list and than adds vertices
-def breadth_first_search(graph):
+def breadth_first_search(graph, first_vertex ):
     queue = []
     visited = [False for i in range(len(graph.vertices))]
-    queue.append(graph.first_vertex)
-    visited[graph.first_vertex.index] = True
+    queue.append(first_vertex)
+    visited[first_vertex.index] = True
 
-    result = [[graph.first_vertex]]
+    result = [[first_vertex]]
     currentLevel = []
-
+    # Queue browsing and leveling
     while queue:
         vertex = queue.pop(0)
         if vertex in currentLevel:
@@ -57,23 +59,25 @@ def save(file_name, tree):
                     
                 physicFile.write(row_str)
 
-
+    # Exceptions for saving
     except PermissionError:
-        print(f"CHYBA: Nemůžu uložit výsledný soubor, protože nemám přístup k ukládání.")
+        print(f"ERROR: I can't save the resulting file because I don't have access to save.")
         exit()
     except:
-        print("CHYBA: Výsledný soubor se nepodařilo uložit.")
+        print("ERROR: The resulting file could not be saved.")
         exit()
 
-
+# Opening the input and output files as an arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', required=False, default=None) # input file as an argument
 parser.add_argument('-o', '--output', required=False, default=None) # output file as an argument
 args = parser.parse_args()
 if args.input != None and args.output != None:
     lines = read(args.input)
-    result_tree = breadth_first_search(Graph(lines))
+    g = Graph(lines)
+    begin_vertex = list(g.vertices.values())[0] # Getting the first vertex
+    result_tree = breadth_first_search(Graph(lines), begin_vertex)
     save(args.output, result_tree)
 else:
-    print("Nezadali jste povinne argumenty (-i pro vstupni soubor, -o pro vystupni soubor.")
+    print("You did not enter mandatory arguments (-i for the input file, -o for the output file.")
     exit()
